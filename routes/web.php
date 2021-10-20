@@ -22,3 +22,8 @@ Route::post('/lutipxfegswfgpoygrzqkiphezeqmfbwhdrswxbazoegtfdskozlbmerpydkexcy/w
     $update = Telegram::commandsHandler(true);
     return 'ok';
 });
+
+Route::get('/setwebhook', function () {
+    $response = Telegram::setWebhook(['url' => 'https://bgi-it-bot.herokuapp.com/lutipxfegswfgpoygrzqkiphezeqmfbwhdrswxbazoegtfdskozlbmerpydkexcy/webhook']);
+    dd($response);
+});
