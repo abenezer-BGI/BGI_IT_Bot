@@ -31,6 +31,7 @@ class HelpCommand extends Command
     public function handle()
 
     {
+//        TODO add list of commands to be displayed when /help is sent to the bot
         $response = $this->getUpdate();
 
 

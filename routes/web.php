@@ -26,3 +26,11 @@ Route::get('/setwebhook', function () {
     $response = Telegram::setWebhook(['url' => 'https://bgi-it-bot.herokuapp.com/lutipxfegswfgpoygrzqkiphezeqmfbwhdrswxbazoegtfdskozlbmerpydkexcy/webhook']);
     dd($response);
 });
+
+Route::get('/lutipxfegswfgpoygrzqkiphezeqmfbwhdrswxbazoegtfdskozlbmerpydkexcy/sendMessage',function (){
+    Telegram::sendMessage([
+        'chat_id' => '343675433',
+        'text' => 'Hello world!'
+    ]);
+    return;
+});
