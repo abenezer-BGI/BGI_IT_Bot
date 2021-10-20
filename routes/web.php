@@ -20,4 +20,5 @@ Route::get('/', function () {
 
 Route::post('/lutipxfegswfgpoygrzqkiphezeqmfbwhdrswxbazoegtfdskozlbmerpydkexcy/webhook', function () {
     $update = Telegram::commandsHandler(true);
+    return 'ok';
 });
