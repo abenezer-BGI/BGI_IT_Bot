@@ -59,7 +59,7 @@ return [
     | your default bot for regular use.
     |
     */
-    'default'                      => 'mybot',
+    'default'                      => 'bgi_it_bot',
 
     /*
     |--------------------------------------------------------------------------
@@ -118,7 +118,8 @@ return [
     |
     */
     'commands'                     => [
-        Telegram\Bot\Commands\HelpCommand::class,
+//        Telegram\Bot\Commands\HelpCommand::class,
+        \App\Telegram\Commands\HelpCommand::class,
     ],
 
     /*
