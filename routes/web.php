@@ -27,10 +27,10 @@ Route::get('/setwebhook', function () {
     dd($response);
 });
 
-Route::get('/lutipxfegswfgpoygrzqkiphezeqmfbwhdrswxbazoegtfdskozlbmerpydkexcy/sendMessage',function (){
+Route::get('/lutipxfegswfgpoygrzqkiphezeqmfbwhdrswxbazoegtfdskozlbmerpydkexcy/sendMessage/{chat_id}',function ($chat_id){
     Telegram::sendMessage([
-        'chat_id' => '343675433',
-        'text' => 'Hello world!'
+        'chat_id' => $chat_id,
+        'text' => 'Hello world!',
     ]);
     return;
 });
