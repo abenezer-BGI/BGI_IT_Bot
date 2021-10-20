@@ -39,7 +39,7 @@ class HelpCommand extends Command
         $text .= env('APP_URL').chr(10).chr(10);
         $text .= 'Please come and visit me there.'.chr(10);
 
-        $this->replyWithMessage($response);
+        $this->replyWithMessage(compact('text'));
 
     }
 }
