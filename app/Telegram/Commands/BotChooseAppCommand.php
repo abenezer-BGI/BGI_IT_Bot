@@ -32,10 +32,6 @@ class BotChooseAppCommand extends CommandHandler
                             'text' => 'Device Inventory',
                             'callback_data' => 'device_inventory',
                         ]),
-                        new InlineKeyboardButton([
-                            'text' => 'Telecom Bill',
-                            'callback_data' => 'telecom_bill',
-                        ]),
                     ]
                 ],
             ]),
