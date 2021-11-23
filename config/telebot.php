@@ -2,7 +2,9 @@
 
 use App\Telegram\Commands\BotHelpCommand;
 use App\Telegram\Commands\BotStartCommand;
-use App\Telegram\Handlers\BotUpdateHandler;
+use App\Telegram\Handlers\TelecomBill\BotTelecomBillUpdateHandler;
+use App\Telegram\Handlers\DeviceInventory\BotDeviceInventoryUpdateHandler;
+use App\Telegram\Handlers\TelecomBill\BotTelecomBillCallbackHandler;
 
 return [
     /*-------------------------------------------------------------------------
@@ -50,11 +52,14 @@ return [
 
             'handlers' => [
                 // Your update handlers
-                BotUpdateHandler::class,
+                // Commands
                 BotStartCommand::class,
                 BotHelpCommand::class,
-//                \App\Telegram\Commands\BotLoginCommand::class,
-                \App\Telegram\Commands\BotChooseAppCommand::class,
+
+                // Handlers
+                BotDeviceInventoryUpdateHandler::class,
+                BotTelecomBillUpdateHandler::class,
+                BotTelecomBillCallbackHandler::class,
             ],
         ],
 
