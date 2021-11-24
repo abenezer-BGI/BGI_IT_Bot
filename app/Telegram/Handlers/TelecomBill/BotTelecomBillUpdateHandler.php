@@ -38,6 +38,10 @@ class BotTelecomBillUpdateHandler extends UpdateHandler
         $bot_status = BotStatus::query()->firstWhere('user_id', '=', $message->from->id);
 
         if ($bot_status->last_question === 'telecom_bill.service_number') {
+            $bot_status->update([
+                'path' => $this->path_append($bot_status->path, 'service_number'),
+                'back_path'=>'root',
+            ]);
             if (preg_match('/^[0-9]+$/', $update->message->text)) {
                 $bot_user->update([
                     'service_number' => $update->message->text,
@@ -48,29 +52,38 @@ class BotTelecomBillUpdateHandler extends UpdateHandler
                 $this->sendMessage([
                     'chat_id' => $message->chat->id,
                     'text' => 'Success! I have successfully received your service number.' . chr(10) .
-                        'Now your telegram account @' . $bot_user->username . ' is connected to the service number ' . $bot_user->service_number,
+                        'Now your telegram account is connected to the service number ' . $bot_user->service_number,
                 ]);
 
-                $this->sendMessage([
-                    'chat_id' => $message->chat->id,
-                    'message_id' => $message->message_id,
+                $this->editMessageText([
+                    'chat_id' => $this->update->callback_query->message->chat->id,
+                    'message_id' => $this->update->callback_query->message->message_id,
                     'text' => 'Please select the bill YEAR you want to browse',
                     'reply_markup' => new InlineKeyboardMarkup([
                         'inline_keyboard' => [
                             [
                                 new InlineKeyboardButton([
                                     'text' => now()->subYears(2)->format('Y'),
-                                    'callback_data' => 'telecom_bill.year.'.now()->subYears(2)->format('Y'),
+                                    'callback_data' => 'telecom_bill.year.' . now()->subYears(2)->format('Y'),
                                 ]),
                                 new InlineKeyboardButton([
                                     'text' => now()->subYears(1)->format('Y'),
-                                    'callback_data' => 'telecom_bill.year.'.now()->subYears(1)->format('Y'),
+                                    'callback_data' => 'telecom_bill.year.' . now()->subYears(1)->format('Y'),
                                 ]),
                                 new InlineKeyboardButton([
                                     'text' => now()->format('Y'),
-                                    'callback_data' => 'telecom_bill.year.'.now()->format('Y'),
+                                    'callback_data' => 'telecom_bill.year.' . now()->format('Y'),
                                 ]),
-                            ],
+                            ], [
+                                new InlineKeyboardButton([
+                                    'text' => 'Back',
+                                    'callback_data' => $bot_status->back_path,
+                                ]),
+                                new InlineKeyboardButton([
+                                    'text' => 'Home',
+                                    'callback_data' => $bot_status->root_path,
+                                ]),
+                            ]
                         ],
                     ]),
                 ]);
@@ -87,6 +100,6 @@ class BotTelecomBillUpdateHandler extends UpdateHandler
     public function path_append($path, $text)
     {
         $array_path = explode('.', $path);
-        return end($array_path) === 'telecom_bill' ? $path : $path . $text;
+        return end($array_path) === $text ? $path : $path . $text;
     }
 }

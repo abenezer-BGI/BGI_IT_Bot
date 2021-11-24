@@ -51,42 +51,39 @@ class BotStartCommand extends CommandHandler
                     'telegram_user_id' => $this->update->message->from->id,
                 ], [
                     'first_name' => $this->update->message->from->first_name,
-                    'last_name' => $this->update->message->from->last_name ?? '',
-                    'username' => $this->update->message->from->username,
+                    'last_name' => $this->update->message->from->last_name ?? null,
+                    'username' => $this->update->message->from->username ?? null,
                     'is_bot' => $this->update->message->from->is_bot,
                     'chat_id' => $this->update->message->chat->id,
                 ]
             );
 
-            BotStatus::query()->firstOrCreate(
+            BotStatus::query()->updateOrCreate(
                 [
                     'user_id' => $this->update->message->from->id,
                 ], [
-                    'path' => 'root'
+                    'path' => '',
+                    'back_path'=>'root',
+                    'root_path'=>'root',
                 ]
             );
 
             $this->sendMessage([
                 'chat_id' => $this->update->message->from->id,
-                'text' => 'Hello ' . $this->update->message->from->first_name . ', ' . chr(10) . 'Choose an application you want to interact with',
+                'text' => 'Hello ' . $this->update->message->from->first_name . ', ' . chr(10) . 'Choose what you want to do',
                 'reply_markup' => new InlineKeyboardMarkup([
                     'inline_keyboard' => [
                         [
                             new InlineKeyboardButton([
-                                'text' => 'Telecom Bill',
+                                'text' => 'Bill Report',
                                 'callback_data' => 'telecom_bill',
                             ]),
-                        ], [
-                            new InlineKeyboardButton([
-                                'text' => 'Device Inventory',
-                                'callback_data' => 'device_inventory',
-                            ]),
-                        ],
+                        ]
                     ],
                 ]),
             ]);
         } catch (TeleBotObjectException $e) {
-            Log::channel('telegram')->info($e->getMessage());
+            Log::info($e->getMessage());
         }
 
     }

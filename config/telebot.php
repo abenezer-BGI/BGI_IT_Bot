@@ -57,6 +57,7 @@ return [
                 BotHelpCommand::class,
 
                 // Handlers
+                \App\Telegram\Handlers\BotUpdateHandler::class,
                 BotDeviceInventoryUpdateHandler::class,
                 BotTelecomBillUpdateHandler::class,
                 BotTelecomBillCallbackHandler::class,

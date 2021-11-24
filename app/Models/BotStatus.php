@@ -17,6 +17,8 @@ class BotStatus extends Model
         'last_question',
         'last_answer',
         'path',
+        'back_path',
+        'root_path',
         'created_at',
         'updated_at',
     ];

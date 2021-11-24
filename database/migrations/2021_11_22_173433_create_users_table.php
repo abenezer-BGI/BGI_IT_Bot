@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string("first_name")->nullable();
             $table->string("last_name")->nullable();
-            $table->string("username");
+            $table->string("username")->nullable();
             $table->boolean("is_bot");
             $table->string("telegram_user_id");
             $table->bigInteger("service_number")->nullable();

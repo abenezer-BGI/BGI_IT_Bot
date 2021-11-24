@@ -110,7 +110,6 @@ class BotDeviceInventoryUpdateHandler extends UpdateHandler
             ]);
         }
 
-        Log::debug('Callback data: ' . $callback->data);
         if ($callback->data === 'device_inventory.device_per_site.computer') {
             $computer_data = Computer::with('site:id,display_name')->selectRaw('count(site_id) as count, device_type, site_id')->groupBy(['device_type', 'site_id'])->get();
             $text = 'Computers Data' . chr(10);
