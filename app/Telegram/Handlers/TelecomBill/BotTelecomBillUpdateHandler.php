@@ -56,8 +56,8 @@ class BotTelecomBillUpdateHandler extends UpdateHandler
                 ]);
 
                 $this->editMessageText([
-                    'chat_id' => $this->update->callback_query->message->chat->id,
-                    'message_id' => $this->update->callback_query->message->message_id,
+                    'chat_id' => $this->update->message->chat->id,
+                    'message_id' => $this->update->message->message_id,
                     'text' => 'Please select the bill YEAR you want to browse',
                     'reply_markup' => new InlineKeyboardMarkup([
                         'inline_keyboard' => [
