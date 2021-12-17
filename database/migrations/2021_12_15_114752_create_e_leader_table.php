@@ -15,10 +15,10 @@ class CreateELeaderTable extends Migration
     {
         Schema::create('e_leaders', function (Blueprint $table) {
             $table->id();
-            $table->string("fidelity_id");
-            $table->string("bgi_id");
-            $table->string("client_name");
-            $table->string("phone_number");
+            $table->string("fidelity_id")->nullable();
+            $table->string("bgi_id")->nullable();
+            $table->string("client_name")->nullable();
+            $table->string("phone_number")->nullable();
             $table->foreignId("user_id");
             $table->softDeletes();
             $table->foreignId("deleted_by")->nullable();

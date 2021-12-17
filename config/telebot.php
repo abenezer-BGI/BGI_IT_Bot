@@ -61,11 +61,11 @@ return [
 
                 // Handlers
                 BotUpdateHandler::class,
-                BotDeviceInventoryUpdateHandler::class,
-                BotTelecomBillUpdateHandler::class,
-                BotTelecomBillCallbackHandler::class,
-                BotELeaderCallbackHandler::class,
-                BotELeaderUpdateHandler::class,
+//                BotDeviceInventoryUpdateHandler::class,
+//                BotTelecomBillUpdateHandler::class,
+//                BotTelecomBillCallbackHandler::class,
+//                BotELeaderCallbackHandler::class,
+//                BotELeaderUpdateHandler::class,
             ],
         ],
 
