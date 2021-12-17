@@ -6,6 +6,7 @@ namespace App\Telegram\Commands;
 
 use App\Models\BotStatus;
 use App\Models\BotUser;
+use App\Telegram\Handlers\BotUpdateHandler;
 use Illuminate\Support\Facades\Log;
 use WeStacks\TeleBot\Exception\TeleBotObjectException;
 use WeStacks\TeleBot\Handlers\CommandHandler;
@@ -46,46 +47,85 @@ class BotStartCommand extends CommandHandler
 //        ]);
 
         try {
-            BotUser::query()->updateOrCreate(
+            $bot_user = BotUser::query()->updateOrCreate(
                 [
-                    'telegram_user_id' => $this->update->message->from->id,
+                    'chat_id' => $this->update->message->chat->id,
                 ], [
                     'first_name' => $this->update->message->from->first_name,
                     'last_name' => $this->update->message->from->last_name ?? null,
                     'username' => $this->update->message->from->username ?? null,
+                    'telegram_user_id' => $this->update->message->from->id,
                     'is_bot' => $this->update->message->from->is_bot,
-                    'chat_id' => $this->update->message->chat->id,
                 ]
             );
 
             BotStatus::query()->updateOrCreate(
                 [
-                    'user_id' => $this->update->message->from->id,
+                    'user_id' => $bot_user->id,
                 ], [
+                    'last_question' => '',
+                    'last_answer' => '',
                     'path' => '',
-                    'back_path'=>'root',
-                    'root_path'=>'root',
+                    'back_path' => 'root',
+                    'root_path' => 'root',
                 ]
             );
 
-            $this->sendMessage([
-                'chat_id' => $this->update->message->from->id,
-                'text' => 'Hello ' . $this->update->message->from->first_name . ', ' . chr(10) . 'Choose what you want to do',
-                'reply_markup' => new InlineKeyboardMarkup([
-                    'inline_keyboard' => [
-                        [
-                            new InlineKeyboardButton([
-                                'text' => 'Bill Report',
-                                'callback_data' => 'telecom_bill',
-                            ]),
-                        ]
-                    ],
-                ]),
-            ]);
+            $this->welcome_message($this->update);
+
         } catch (TeleBotObjectException $e) {
             Log::info($e->getMessage());
         }
 
+    }
+
+    /**
+     * Send the first start message
+     * @param $update
+     * @throws TeleBotObjectException
+     */
+    public function welcome_message($update)
+    {
+        if (isset($update->callback_query)) {
+            $this->sendMessage([
+                'text' => 'ሰላም ' . $update->callback_query->from->first_name . ', ' . chr(10) . 'ምን ማድረግ ይፈልጋሉ?',
+                'chat_id' => $update->callback_query->message->chat->id,
+//                'message_id'=>$update->callback_query->message->message_id,
+                'reply_markup' => new InlineKeyboardMarkup([
+                    'inline_keyboard' => [
+                        [
+                            new InlineKeyboardButton([
+                                'text' => 'ቢ.ጂ.አይ ቤተኛ',
+                                'callback_data' => 'eLeader',
+                            ]),
+//                                new InlineKeyboardButton([
+//                                    'text' => 'Bill Report',
+//                                    'callback_data' => 'telecom_bill',
+//                                ]),
+                        ]
+                    ],
+                ]),
+            ]);
+        } elseif (isset($update->message)) {
+            $this->sendMessage([
+                'text' => 'ሰላም ' . $update->message->from->first_name . ', ' . chr(10) . 'ምን ማድረግ ይፈልጋሉ?',
+                'chat_id' => $update->message->chat->id,
+                'reply_markup' => new InlineKeyboardMarkup([
+                    'inline_keyboard' => [
+                        [
+                            new InlineKeyboardButton([
+                                'text' => 'ቢ.ጂ.አይ ቤተኛ',
+                                'callback_data' => 'eLeader',
+                            ]),
+//                                new InlineKeyboardButton([
+//                                    'text' => 'Bill Report',
+//                                    'callback_data' => 'telecom_bill',
+//                                ]),
+                        ]
+                    ],
+                ]),
+            ]);
+        }
     }
 
 }

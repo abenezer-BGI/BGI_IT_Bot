@@ -6,6 +6,7 @@ namespace App\Telegram\Handlers;
 
 use App\Models\BotStatus;
 use App\Models\BotUser;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use WeStacks\TeleBot\Exception\TeleBotObjectException;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
@@ -55,21 +56,8 @@ class BotUpdateHandler extends UpdateHandler
                     ]
                 );
 
-                $this->editMessageText([
-                    'chat_id' => $this->update->callback_query->message->chat->id,
-                    'message_id'=>$this->update->callback_query->message->message_id,
-                    'text' => 'Hello ' . $this->update->callback_query->from->first_name . ', ' . chr(10) . 'Choose what you want to do',
-                    'reply_markup' => new InlineKeyboardMarkup([
-                        'inline_keyboard' => [
-                            [
-                                new InlineKeyboardButton([
-                                    'text' => 'Bill Report',
-                                    'callback_data' => 'telecom_bill',
-                                ]),
-                            ]
-                        ],
-                    ]),
-                ]);
+                $this->welcome_message($this->update);
+
             } catch (TeleBotObjectException $e) {
                 Log::info($e->getMessage());
             }
@@ -77,6 +65,55 @@ class BotUpdateHandler extends UpdateHandler
             $this->answerCallbackQuery([
                 'callback_query_id' => $this->update->callback_query->id,
                 'text' => 'Went to home',
+            ]);
+        }
+    }
+
+    /**
+     * Send the first start message
+     * @param $update
+     * @throws TeleBotObjectException
+     */
+    public function welcome_message($update)
+    {
+        if (isset($update->callback_query)) {
+            $this->editMessageText([
+                'text' => 'ሰላም ' . $update->callback_query->from->first_name . ', ' . chr(10) . 'ምን ማድረግ ይፈልጋሉ?',
+                'chat_id' => $update->callback_query->message->chat->id,
+                'message_id'=>$this->update->callback_query,
+                'reply_markup' => new InlineKeyboardMarkup([
+                    'inline_keyboard' => [
+                        [
+                            new InlineKeyboardButton([
+                                'text' => 'ቢ.ጂ.አይ ቤተኛ',
+                                'callback_data' => 'eLeader',
+                            ]),
+//                                new InlineKeyboardButton([
+//                                    'text' => 'Bill Report',
+//                                    'callback_data' => 'telecom_bill',
+//                                ]),
+                        ]
+                    ],
+                ]),
+            ]);
+        } elseif (isset($update->message)) {
+            $this->sendMessage([
+                'text' => 'ሰላም ' . $update->message->from->first_name . ', ' . chr(10) . 'ምን ማድረግ ይፈልጋሉ?',
+                'chat_id' => $update->message->chat->id,
+                'reply_markup' => new InlineKeyboardMarkup([
+                    'inline_keyboard' => [
+                        [
+                            new InlineKeyboardButton([
+                                'text' => 'ቢ.ጂ.አይ ቤተኛ',
+                                'callback_data' => 'eLeader',
+                            ]),
+//                                new InlineKeyboardButton([
+//                                    'text' => 'Bill Report',
+//                                    'callback_data' => 'telecom_bill',
+//                                ]),
+                        ]
+                    ],
+                ]),
             ]);
         }
     }

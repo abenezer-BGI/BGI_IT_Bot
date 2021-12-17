@@ -2,9 +2,12 @@
 
 use App\Telegram\Commands\BotHelpCommand;
 use App\Telegram\Commands\BotStartCommand;
-use App\Telegram\Handlers\TelecomBill\BotTelecomBillUpdateHandler;
+use App\Telegram\Handlers\BotUpdateHandler;
 use App\Telegram\Handlers\DeviceInventory\BotDeviceInventoryUpdateHandler;
+use App\Telegram\Handlers\eLeader\BotELeaderCallbackHandler;
+use App\Telegram\Handlers\eLeader\BotELeaderUpdateHandler;
 use App\Telegram\Handlers\TelecomBill\BotTelecomBillCallbackHandler;
+use App\Telegram\Handlers\TelecomBill\BotTelecomBillUpdateHandler;
 
 return [
     /*-------------------------------------------------------------------------
@@ -57,10 +60,12 @@ return [
                 BotHelpCommand::class,
 
                 // Handlers
-                \App\Telegram\Handlers\BotUpdateHandler::class,
+                BotUpdateHandler::class,
                 BotDeviceInventoryUpdateHandler::class,
                 BotTelecomBillUpdateHandler::class,
                 BotTelecomBillCallbackHandler::class,
+                BotELeaderCallbackHandler::class,
+                BotELeaderUpdateHandler::class,
             ],
         ],
 

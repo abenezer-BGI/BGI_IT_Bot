@@ -7,8 +7,8 @@ namespace App\Telegram\Handlers\TelecomBill;
 use App\Models\BotStatus;
 use App\Models\BotUser;
 use App\Models\TelecomBill\Expense;
-use App\Telegram\Commands\BotStartCommand;
-use Illuminate\Support\Facades\Log;
+use App\Traits\TelegramCustomTrait;
+use WeStacks\TeleBot\Exception\TeleBotObjectException;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
 use WeStacks\TeleBot\Objects\InlineKeyboardButton;
 use WeStacks\TeleBot\Objects\Keyboard\InlineKeyboardMarkup;
@@ -17,6 +17,7 @@ use WeStacks\TeleBot\TeleBot;
 
 class BotTelecomBillCallbackHandler extends UpdateHandler
 {
+    use TelegramCustomTrait;
 
     /**
      * @inheritDoc
@@ -31,21 +32,21 @@ class BotTelecomBillCallbackHandler extends UpdateHandler
 
     /**
      * @inheritDoc
-     * @throws \WeStacks\TeleBot\Exception\TeleBotObjectException
+     * @throws TeleBotObjectException
      */
     public function handle()
     {
         $update = $this->update;
         $callback = $update->callback_query;
-        $bot_user = BotUser::query()->firstWhere('telegram_user_id', '=', $callback->from->id);
-        $bot_status = BotStatus::query()->firstWhere('user_id', '=', $callback->from->id);
+        $bot_user = BotUser::query()->firstWhere('telegram_user_id', '=', $callback->message->chat->id);
+        $bot_status = BotStatus::query()->firstWhere('user_id', '=', $bot_user->id);
 
 //        Log::info('Bot_status_path: '.$bot_status->path.chr(10).' Bot_last_question: '.$bot_status->last_question.chr(10).' Bot_last_answer: '.$bot_status->last_answer.chr(10).' Bot_back_button_data: '.$this->back_button_callback_data($bot_status->path));
 
         if ($callback->data === 'telecom_bill') {
             $bot_status->update([
                 'path' => $this->path_append($bot_status->path, 'telecom_bill'),
-                'back_path'=>'root',
+                'back_path' => 'root',
             ]);
 
             if (is_null($bot_user->service_number)) {
@@ -99,7 +100,7 @@ class BotTelecomBillCallbackHandler extends UpdateHandler
             $bot_status->update([
                 'last_answer' => $year,
                 'path' => $this->path_append($bot_status->path, '.year'),
-                'back_path'=>'telecom_bill',
+                'back_path' => 'telecom_bill',
             ]);
             $this->editMessageText([
                 'chat_id' => $callback->message->chat->id,
@@ -178,7 +179,7 @@ class BotTelecomBillCallbackHandler extends UpdateHandler
         if (str_starts_with($callback->data, 'telecom_bill.month')) {
             $bot_status->update([
                 'path' => $this->path_append($bot_status->path, '.month'),
-                'back_path'=>'telecom_bill.year',
+                'back_path' => 'telecom_bill.year',
             ]);
             $array_data = explode('.', $callback->data);
             $month = end($array_data);
@@ -205,11 +206,11 @@ class BotTelecomBillCallbackHandler extends UpdateHandler
         $this->answerCallbackQuery();
     }
 
-    public function path_append($path, $text)
-    {
-        $array_path = explode('.', $path);
-        return end($array_path) === $text ? $path : $path . $text;
-    }
+//    public function path_append($path, $text)
+//    {
+//        $array_path = explode('.', $path);
+//        return end($array_path) === $text ? $path : $path . $text;
+//    }
 
     public function back_button_callback_data($current_path)
     {

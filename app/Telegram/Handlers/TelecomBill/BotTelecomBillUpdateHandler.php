@@ -6,6 +6,7 @@ namespace App\Telegram\Handlers\TelecomBill;
 
 use App\Models\BotStatus;
 use App\Models\BotUser;
+use App\Traits\TelegramCustomTrait;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
 use WeStacks\TeleBot\Objects\InlineKeyboardButton;
 use WeStacks\TeleBot\Objects\Keyboard\InlineKeyboardMarkup;
@@ -14,7 +15,7 @@ use WeStacks\TeleBot\TeleBot;
 
 class BotTelecomBillUpdateHandler extends UpdateHandler
 {
-
+    use TelegramCustomTrait;
     /**
      * @inheritDoc
      */
@@ -35,7 +36,7 @@ class BotTelecomBillUpdateHandler extends UpdateHandler
         $update = $this->update;
         $message = $update->message;
         $bot_user = BotUser::query()->firstWhere('telegram_user_id', '=', $message->from->id);
-        $bot_status = BotStatus::query()->firstWhere('user_id', '=', $message->from->id);
+        $bot_status = BotStatus::query()->firstWhere('user_id', '=', $bot_user->id);
 
         if ($bot_status->last_question === 'telecom_bill.service_number') {
             $bot_status->update([
@@ -97,9 +98,9 @@ class BotTelecomBillUpdateHandler extends UpdateHandler
         }
     }
 
-    public function path_append($path, $text)
-    {
-        $array_path = explode('.', $path);
-        return end($array_path) === $text ? $path : $path . $text;
-    }
+//    public function path_append($path, $text)
+//    {
+//        $array_path = explode('.', $path);
+//        return end($array_path) === $text ? $path : $path . $text;
+//    }
 }

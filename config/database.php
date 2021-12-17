@@ -131,6 +131,18 @@ return [
             'prefix_indexes' => true,
         ],
 
+        'eLeader' => [
+            'driver' => 'sqlsrv',
+            'host' => env('eLEADER_DB_HOST', 'localhost'),
+            'port' => env('eLEADER_DB_PORT', '1433'),
+            'database' => env('eLEADER_DB_DATABASE', 'forge'),
+            'username' => env('eLEADER_DB_USERNAME', 'forge'),
+            'password' => env('eLEADER_DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
+
     ],
 
     /*
