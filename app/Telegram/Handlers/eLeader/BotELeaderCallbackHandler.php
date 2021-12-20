@@ -78,3 +78,15 @@ class BotELeaderCallbackHandler
     }
 
 }
+
+/*
+ *  Type
+ *  Territory
+ *  Tin Number
+ *  Route
+ *  BGI ID
+ *  Bottle Distributor
+ *  Outlet Tag
+ *  Machine Cleaning contact person
+ *  Customer Service
+ */

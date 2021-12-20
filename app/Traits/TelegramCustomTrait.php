@@ -25,12 +25,12 @@ trait TelegramCustomTrait{
         if($language === 'amharic') {
             $this->sendMessage([
                 'chat_id' => $update->message->chat->id,
-                'text' => 'ያስገቡት መልስ ልክ አይደለም! እባክዎን ለተጠየቀው ጥያቄ ትክክለኛ መልስ ይስጡ።',
+                'text' => 'ያስገቡት መልእክት ልክ አይደለም!',
             ]);
         }elseif ($language === 'english'){
             $this->sendMessage([
                 'chat_id' => $update->message->chat->id,
-                'text' => 'The reply you sent is not correct! Please answer the quest correctly.',
+                'text' => 'The reply you sent is not correct!',
             ]);
         }
     }

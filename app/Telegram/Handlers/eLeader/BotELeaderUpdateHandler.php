@@ -49,6 +49,12 @@ class BotELeaderUpdateHandler
 
                 Log::info($fidelityDataFromDB->toJson());
 
+                $bot_status->update([
+                    'last_question'=> '',
+                    'last_answer'=>'',
+                    'path'=>$this->path_append($bot_status->path,'/otp_confirmation'),
+                ]);
+
                 ELeader::query()->updateOrCreate(
                     [
                         'fidelity_id' => $fidelityDataFromDB->where('FieldCode', 'OBJ_PARAM_Fidelity_ID')->first()->FieldValue,

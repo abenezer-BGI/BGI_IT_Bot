@@ -9,7 +9,7 @@ use App\Models\BotUser;
 use App\Telegram\Commands\BotStartCommand;
 use App\Telegram\Handlers\eLeader\BotELeaderCallbackHandler;
 use App\Telegram\Handlers\eLeader\BotELeaderUpdateHandler;
-use Illuminate\Support\Facades\DB;
+use App\Traits\TelegramCustomTrait;
 use WeStacks\TeleBot\Exception\TeleBotObjectException;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
@@ -17,13 +17,14 @@ use WeStacks\TeleBot\TeleBot;
 
 class BotUpdateHandler extends UpdateHandler
 {
+    use TelegramCustomTrait;
 
     /**
      * @inheritDoc
      */
     public static function trigger(Update $update, TeleBot $bot)
     {
-        if (isset($update->message) or isset($update->callback_query)) {
+        if ((isset($update->message) and !str_starts_with($update->message->text,'/')) or isset($update->callback_query)) {
             return true;
         }
         return false;
@@ -43,35 +44,38 @@ class BotUpdateHandler extends UpdateHandler
             $bot_user = BotUser::query()->firstWhere('telegram_user_id', '=', $this->update->callback_query->message->chat->id);
             $bot_status = BotStatus::query()->firstWhere('user_id', '=', $bot_user->id);
             $callbackData = $this->update->callback_query->data;
-            if ($callbackData === 'root') {
-                (new BotStartCommand($this->bot, $this->update))->welcome_message($update);
+            switch ($callbackData) {
+                case 'root':
+                    (new BotStartCommand($this->bot, $this->update))->welcome_message($update);
+                    break;
+                case 'eLeader':
+                    (new BotELeaderCallbackHandler())->request_phone_number($bot, $bot_user, $bot_status, $message, $update);
+                    break;
+                case 'eLeader.enqu_amount':
+                    (new BotELeaderCallbackHandler())->send_enqu_amount($bot, $bot_user, $update);
+                    break;
+                default:
+                    $this->error_message($update, 'amharic');
+                    break;
             }
-            if ($callbackData === 'eLeader') {
-                (new BotELeaderCallbackHandler())->request_phone_number($bot, $bot_user, $bot_status, $message, $update);
-            }
-            if ($callbackData === 'eLeader.enqu_amount') {
-                (new BotELeaderCallbackHandler())->send_enqu_amount($bot, $bot_user, $update);
-            }
+
             $this->answerCallbackQuery();
         } elseif ($this->update->type() === 'message') {
             $bot_user = BotUser::query()->firstWhere('telegram_user_id', '=', $this->update->message->chat->id);
             $bot_status = BotStatus::query()->firstWhere('user_id', '=', $bot_user->id);
-            if ($bot_status->last_question === 'otp_confirmation') {
-                (new BotELeaderUpdateHandler())->otp_confirmation($bot,$bot_user,$bot_status,$update);
-            }if ($bot_status->last_question === 'eLeader_phone_number_request') {
-                (new BotELeaderUpdateHandler())->phone_number_request($bot,$bot_user,$bot_status,$update);
+
+            switch ($bot_status->last_question) {
+                case 'otp_confirmation':
+                    (new BotELeaderUpdateHandler())->otp_confirmation($bot, $bot_user, $bot_status, $update);
+                    break;
+                case 'eLeader_phone_number_request':
+                    (new BotELeaderUpdateHandler())->phone_number_request($bot, $bot_user, $bot_status, $update);
+                    break;
+                default:
+                    $this->error_message($update, 'amharic');
+                    break;
             }
         }
 
     }
 }
-
-//collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID]
-//,[ObjectID]
-//,[TaskDefID]
-//,[FieldID]
-//,[FieldCode]
-//,[FieldName]
-//,[FieldValue]
-//,[ExportDate]
-//FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters] where [_tbEleaderExportObjectParameters].FieldCode = 'OBJ_PARAM_7774424' and [_tbEleaderExportObjectParameters].FieldName='SMS phone number' and [_tbEleaderExportObjectParameters].FieldValue = '0900000000'"))
