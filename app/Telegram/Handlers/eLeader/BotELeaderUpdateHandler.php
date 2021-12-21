@@ -186,7 +186,7 @@ class BotELeaderUpdateHandler
                 ]);
             }
         } else {
-            $this->error_message($update, 'amharic');
+            $this->error_message($bot,$update, 'amharic');
         }
     }
 }

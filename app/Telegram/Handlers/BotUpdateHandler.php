@@ -10,6 +10,7 @@ use App\Telegram\Commands\BotStartCommand;
 use App\Telegram\Handlers\eLeader\BotELeaderCallbackHandler;
 use App\Telegram\Handlers\eLeader\BotELeaderUpdateHandler;
 use App\Traits\TelegramCustomTrait;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use WeStacks\TeleBot\Exception\TeleBotObjectException;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
@@ -60,7 +61,7 @@ class BotUpdateHandler extends UpdateHandler
                         (new BotELeaderCallbackHandler())->send_client_info($bot, $bot_user, $bot_status, $message, $update);
                         break;
                     default:
-                        $this->error_message($update, 'amharic');
+                        $this->error_message($bot, $update, 'amharic');
                         break;
                 }
 
@@ -77,11 +78,11 @@ class BotUpdateHandler extends UpdateHandler
                         (new BotELeaderUpdateHandler())->phone_number_request($bot, $bot_user, $bot_status, $update);
                         break;
                     default:
-                        $this->error_message($update, 'amharic');
+                        $this->error_message($bot, $update, 'amharic');
                         break;
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
         }
 
