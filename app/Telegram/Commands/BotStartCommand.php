@@ -91,46 +91,9 @@ class BotStartCommand extends CommandHandler
             $message = $this->update->callback_query->message;
             $bot_user = BotUser::query()->firstWhere('telegram_user_id', '=', $this->update->callback_query->message->chat->id);
             $bot_status = BotStatus::query()->firstWhere('user_id', '=', $bot_user->id);
-//            $this->sendMessage([
-//                'text' => 'ሰላም ውድ ደንበኛችን' . chr(10) . 'ምን ማድረግ ይፈልጋሉ?',
-//                'chat_id' => $update->callback_query->message->chat->id,
-////                'message_id'=>$update->callback_query->message->message_id,
-//                'reply_markup' => new InlineKeyboardMarkup([
-//                    'inline_keyboard' => [
-//                        [
-//                            new InlineKeyboardButton([
-//                                'text' => 'ቢ.ጂ.አይ ቤተኛ',
-//                                'callback_data' => 'eLeader',
-//                            ]),
-////                                new InlineKeyboardButton([
-////                                    'text' => 'Bill Report',
-////                                    'callback_data' => 'telecom_bill',
-////                                ]),
-//                        ]
-//                    ],
-//                ]),
-//            ]);
             (new BotELeaderCallbackHandler())->request_phone_number($this->bot, $bot_user, $bot_status, $message, $update);
 
         } elseif (isset($update->message)) {
-//            $this->sendMessage([
-//                'text' => 'ሰላም ' . $update->message->from->first_name . ', ' . chr(10) . 'ምን ማድረግ ይፈልጋሉ?',
-//                'chat_id' => $update->message->chat->id,
-//                'reply_markup' => new InlineKeyboardMarkup([
-//                    'inline_keyboard' => [
-//                        [
-//                            new InlineKeyboardButton([
-//                                'text' => 'ቢ.ጂ.አይ ቤተኛ',
-//                                'callback_data' => 'eLeader',
-//                            ]),
-////                                new InlineKeyboardButton([
-////                                    'text' => 'Bill Report',
-////                                    'callback_data' => 'telecom_bill',
-////                                ]),
-//                        ]
-//                    ],
-//                ]),
-//            ]);
             $bot_user = BotUser::query()->firstWhere('telegram_user_id', '=', $this->update->message->chat->id);
             $bot_status = BotStatus::query()->firstWhere('user_id', '=', $bot_user->id);
 

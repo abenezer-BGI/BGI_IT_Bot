@@ -102,12 +102,18 @@ class BotELeaderUpdateHandler
                 'inline_keyboard' => [
                     [
                         new InlineKeyboardButton([
-                            'text' => 'እንቁ ብዛት',
+                            'text' => 'እንቁ ብዛት 💎',
                             'callback_data' => 'eLeader.enqu_amount',
                         ]),
                         new InlineKeyboardButton([
-                            'text' => 'የቤቴ መረጃ',
+                            'text' => 'የቤቴ መረጃ ℹ️',
                            'callback_data' => 'eLeader.client_info',
+                        ]),
+                    ],
+                    [
+                        new InlineKeyboardButton([
+                            'text' => 'የጉብኝት መረጃ ℹ️',
+                            'callback_data' => 'eLeader.visit_data',
                         ]),
                     ],
                 ],

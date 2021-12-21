@@ -58,7 +58,10 @@ class BotUpdateHandler extends UpdateHandler
                         (new BotELeaderCallbackHandler())->send_enqu_amount($bot, $bot_user, $update);
                         break;
                     case 'eLeader.client_info':
-                        (new BotELeaderCallbackHandler())->send_client_info($bot, $bot_user, $bot_status, $message, $update);
+                        (new BotELeaderCallbackHandler())->send_client_info($bot, $bot_user, $message, $update);
+                        break;
+                    case 'eLeader.visit_data':
+                        (new BotELeaderCallbackHandler())->visit_info($bot, $bot_user, $message, $update);
                         break;
                     default:
                         $this->error_message($bot, $update, 'amharic');

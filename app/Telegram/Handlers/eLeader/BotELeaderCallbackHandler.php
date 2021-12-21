@@ -23,12 +23,40 @@ class BotELeaderCallbackHandler
     /**
      * @param TeleBot $bot
      * @param Builder|Model $bot_user
-     * @param Builder|Model $bot_status
      * @param Message $message
      * @param Update $update
      * @throws TeleBotObjectException
      */
-    public function send_client_info(TeleBot $bot, BotUser $bot_user, BotStatus $bot_status, Message $message, Update $update)
+    public function visit_info(TeleBot $bot, BotUser $bot_user, Message $message, Update $update)
+    {
+        $eLeaderUserData = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID] ,[ObjectID] ,[TaskDefID] ,[FieldID] ,[FieldCode] ,[FieldName] ,[FieldValue] ,[ExportDate] FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters] where [_tbEleaderExportObjectParameters].FieldCode = 'OBJ_PARAM_7774424' and [_tbEleaderExportObjectParameters].FieldName='SMS phone number' and [_tbEleaderExportObjectParameters].FieldValue = '" . $bot_user->service_number . "'"));
+        $visitData = collect(DB::connection('eLeader')->select("select _tbEleaderExportActivitiesProductTasks.ActivityID, _tbEleaderExportActivitiesProductTaskDetails.ProductID, FORMAT(_tbEleaderExportActivitiesProductTasks.StopActivity,'MMMM dd, yyyy') as visit_date, _tbEleaderExportProducts.ProductName as product_name, _tbEleaderExportActivitiesProductTaskDetails.FieldName as measure, _tbEleaderExportActivitiesProductTaskDetails.FieldValue as quantity from _tbEleaderExportActivitiesProductTasks left join _tbEleaderExportActivitiesProductTaskDetails on _tbEleaderExportActivitiesProductTaskDetails.ActivityID = _tbEleaderExportActivitiesProductTasks.ActivityID left join _tbEleaderExportProducts on _tbEleaderExportProducts.ProductID = _tbEleaderExportActivitiesProductTaskDetails.ProductID where _tbEleaderExportActivitiesProductTasks.ObjectID = '02121000000000001403673' and _tbEleaderExportActivitiesProductTaskDetails.FieldName = 'Quantity pcs' and _tbEleaderExportActivitiesProductTaskDetails.TaskStatus = 'executed' order by visit_date desc"));
+        $visitDates = $visitData->pluck('visit_date')->unique();
+        $visitMessage = '';
+        foreach ($visitDates->take(3) as $visitDate) {
+            $visitMessage .= '*Date: ' . $visitDate . '*' . chr(10);
+            foreach ($visitData->where('visit_date', '=', $visitDate) as $item) {
+                $visitMessage .= $item->product_name . ' (' . $item->measure . ') = ' . $item->quantity . chr(10);
+            }
+            $visitMessage .= chr(10);
+        }
+
+        $bot->sendMessage([
+            'chat_id' => $message->chat->id,
+            'text' => $visitMessage,
+            'parse_mode' => 'markdown',
+        ]);
+
+    }
+
+    /**
+     * @param TeleBot $bot
+     * @param Builder|Model $bot_user
+     * @param Message $message
+     * @param Update $update
+     * @throws TeleBotObjectException
+     */
+    public function send_client_info(TeleBot $bot, BotUser $bot_user, Message $message, Update $update)
     {
         $eLeaderUserData = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID] ,[ObjectID] ,[TaskDefID] ,[FieldID] ,[FieldCode] ,[FieldName] ,[FieldValue] ,[ExportDate] FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters] where [_tbEleaderExportObjectParameters].FieldCode = 'OBJ_PARAM_7774424' and [_tbEleaderExportObjectParameters].FieldName='SMS phone number' and [_tbEleaderExportObjectParameters].FieldValue = '" . $bot_user->service_number . "'"));
 
@@ -108,15 +136,3 @@ class BotELeaderCallbackHandler
     }
 
 }
-
-/*
- *  Type
- *  Territory
- *  Tin Number
- *  Route
- *  BGI ID
- *  Bottle Distributor
- *  Outlet Tag
- *  Machine Cleaning contact person
- *  Customer Service
- */
