@@ -35,9 +35,9 @@ class BotELeaderCallbackHandler
         if ($object = $eLeaderUserData->firstWhere('ObjectID', '!=', null)) {
             $clientInfo = collect(DB::connection('eLeader')->select("select top (1000) ObjectID,FieldCode,FieldName,FieldValue from _tbEleaderExportObjectParameters where ObjectID = '" . $object->ObjectID . "' and ( FieldName = 'Type' or FieldName = 'Territory' or FieldName = 'Tin Number' or FieldName = 'Route' or FieldName = 'BGI ID' or FieldName = 'Bottle Distributor' or FieldName = 'Outlet Tag' or FieldName = 'Machine Cleaning contact person' or FieldName = 'Customer Service' ) and ( FieldCode = 'OBJ_PARAM_TYPE' or FieldCode = 'OBJ_PARAM_TIN' or FieldCode = 'OBJ_PARAM_MCCP' or FieldCode = 'OBJ_PARAM_Territory' or FieldCode = 'OBJ_PARAM_Route' or FieldCode = 'OBJ_PARAM_BotlDsitr' or FieldCode = 'OBJ_PARAM_BGIID' or FieldCode = 'OBJ_PARAM_Outlet_Tag' )"));
             $clientLocation = collect(DB::connection('eLeader')->select("select ObjectID, ObjectName, City, Country from _tbEleaderExportObjects where ObjectID = '" . $object->ObjectID . "'"))->first();
-            $clientInfoMessage = 'Name: ' . $clientLocation->ObjectName . chr(10) . 'Location: ' . $clientLocation->City . ', ' . $clientLocation->Country . chr(10);
+            $clientInfoMessage = '✔️ Name: ' . $clientLocation->ObjectName . chr(10) . '✔️ Location: ' . $clientLocation->City . ', ' . $clientLocation->Country . chr(10);
             foreach ($clientInfo as $info) {
-                $clientInfoMessage .= $info->FieldName . ': ' . $info->FieldValue . chr(10);
+                $clientInfoMessage .= '✔️ '.$info->FieldName . ': ' . $info->FieldValue . chr(10);
             }
 
             $bot->sendMessage([
