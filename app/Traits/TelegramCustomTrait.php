@@ -20,10 +20,10 @@ trait TelegramCustomTrait{
 
     /**
      * Reply to the bot user with an error message
-     * @param $update
-     * @param $language
+     * @param Update $update
+     * @param string $language
      */
-    public function error_message($update, $language){
+    public function error_message(Update $update, string $language){
         if($language === 'amharic') {
             $this->sendMessage([
                 'chat_id' => $update->message->chat->id,
