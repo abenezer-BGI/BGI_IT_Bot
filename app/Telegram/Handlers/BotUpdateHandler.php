@@ -27,8 +27,6 @@ class BotUpdateHandler extends UpdateHandler
     {
         if ((isset($update->message->text) and !str_starts_with($update->message->text, '/')) or isset($update->callback_query->data)) {
             return true;
-        }elseif (isset($update->message->photo)){
-            var_dump(($update->message->photo));
         }
         return false;
     }
