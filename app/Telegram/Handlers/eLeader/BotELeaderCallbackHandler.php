@@ -28,6 +28,35 @@ class BotELeaderCallbackHandler
      * @param Update $update
      * @throws TeleBotObjectException
      */
+    public function send_client_info(TeleBot $bot, BotUser $bot_user, BotStatus $bot_status, Message $message, Update $update)
+    {
+        $eLeaderUserData = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID] ,[ObjectID] ,[TaskDefID] ,[FieldID] ,[FieldCode] ,[FieldName] ,[FieldValue] ,[ExportDate] FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters] where [_tbEleaderExportObjectParameters].FieldCode = 'OBJ_PARAM_7774424' and [_tbEleaderExportObjectParameters].FieldName='SMS phone number' and [_tbEleaderExportObjectParameters].FieldValue = '" . $bot_user->service_number . "'"));
+
+        if ($object = $eLeaderUserData->firstWhere('ObjectID', '!=', null)) {
+            $clientInfo = collect(DB::connection('eLeader')->select("select top (1000) ObjectID,FieldCode,FieldName,FieldValue from _tbEleaderExportObjectParameters where ObjectID = '" . $object->ObjectID . "' and ( FieldName = 'Type' or FieldName = 'Territory' or FieldName = 'Tin Number' or FieldName = 'Route' or FieldName = 'BGI ID' or FieldName = 'Bottle Distributor' or FieldName = 'Outlet Tag' or FieldName = 'Machine Cleaning contact person' or FieldName = 'Customer Service' ) and ( FieldCode = 'OBJ_PARAM_TYPE' or FieldCode = 'OBJ_PARAM_TIN' or FieldCode = 'OBJ_PARAM_MCCP' or FieldCode = 'OBJ_PARAM_Territory' or FieldCode = 'OBJ_PARAM_Route' or FieldCode = 'OBJ_PARAM_BotlDsitr' or FieldCode = 'OBJ_PARAM_BGIID' or FieldCode = 'OBJ_PARAM_Outlet_Tag' )"));
+            $clientLocation = collect(DB::connection('eLeader')->select("select ObjectID, ObjectName, City, Country from _tbEleaderExportObjects where ObjectID = '" . $object->ObjectID . "'"))->first();
+            $clientInfoMessage = 'Name: ' . $clientLocation->ObjectName . chr(10) . 'Location: ' . $clientLocation->City . ', ' . $clientLocation->Country . chr(10);
+            foreach ($clientInfo as $info) {
+                $clientInfoMessage .= $info->FieldName . ': ' . $info->FieldValue . chr(10);
+            }
+
+            $bot->sendMessage([
+                'chat_id' => $message->chat->id,
+                'text' => $clientInfoMessage,
+            ]);
+        }else{
+
+        }
+    }
+
+    /**
+     * @param TeleBot $bot
+     * @param Builder|Model $bot_user
+     * @param Builder|Model $bot_status
+     * @param Message $message
+     * @param Update $update
+     * @throws TeleBotObjectException
+     */
     public function request_phone_number(TeleBot $bot, BotUser $bot_user, BotStatus $bot_status, Message $message, Update $update)
     {
         if (ELeader::query()->where('user_id', '=', $bot_user->id)->doesntExist()) {
@@ -46,7 +75,7 @@ class BotELeaderCallbackHandler
                     'ስልክዎን ሲያስገቡ 09 ብሎ እንዲጀምር ያድርጉት። ለምሳሌ፡ 0900110011',
             ]);
         } else {
-            (new BotELeaderUpdateHandler())->eLeader_starting_menu($update, $bot_status,$bot);
+            (new BotELeaderUpdateHandler())->eLeader_starting_menu($update, $bot_status, $bot);
         }
     }
 
@@ -65,7 +94,7 @@ class BotELeaderCallbackHandler
             if ($enqu = $enquData->where('FieldName', '=', 'Earned points')->first()) {
                 $enquMessage .= 'ያለዎት የእንቁ ብዛት ' . $enqu->FieldValue . ' 💎 ነው።';
             } else {
-                $enquMessage .= 'ውድ ደንበኛችን የቢ.ጂ.አይ ቤተኛ አገልግሎት አልተመዘገቡም።' . chr(10) .'ለመመዝገብ ፕሮሞተርዎን ያነጋግሩ።';
+                $enquMessage .= 'ውድ ደንበኛችን የቢ.ጂ.አይ ቤተኛ አገልግሎት አልተመዘገቡም።' . chr(10) . 'ለመመዝገብ ፕሮሞተርዎን ያነጋግሩ።';
             }
         } else {
             $enquMessage .= 'ውድ ደንበኛችን የቢ.ጂ.አይ ቤተኛ አገልግሎት ተጠቃሚዎች ዝርዝር ውስጥ አላገኘንዎትም።';

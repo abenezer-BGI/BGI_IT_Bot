@@ -96,7 +96,7 @@ class BotELeaderUpdateHandler
     {
         $bot->sendMessage([
             'chat_id' => $update->message->chat->id ?? $update->callback_query->message->chat->id,
-            'text' => 'ውድ የቢ.ጂ.አይ ቤተኛ ደንበኛችንመጡ እንኳን ወደ ቴሌግራም ቦታችን በሰላም መጡ።' . chr(10) .
+            'text' => 'ውድ የቢ.ጂ.አይ ቤተኛ ደንበኛችን እንኳን ወደ ቴሌግራም ቦታችን በሰላም መጡ።' . chr(10) .
                 'ከታች ያሉትን አገልግሎቶች ማግኘት ይችላሉ።',
             'reply_markup' => new InlineKeyboardMarkup([
                 'inline_keyboard' => [
@@ -105,11 +105,9 @@ class BotELeaderUpdateHandler
                             'text' => 'እንቁ ብዛት',
                             'callback_data' => 'eLeader.enqu_amount',
                         ]),
-                    ],
-                    [
                         new InlineKeyboardButton([
-                            'text' => '<< ተመለስ',
-                            'callback_data' => $bot_status->back_path,
+                            'text' => 'የቤቴ መረጃ',
+                           'callback_data' => 'eLeader.client_info',
                         ]),
                     ],
                 ],
@@ -130,7 +128,6 @@ class BotELeaderUpdateHandler
         if (preg_match('/^[0-9]+$/', $update->message->text) and strlen($update->message->text) === 10) {
             $phone_number = ltrim($update->message->text, '0');
             $eLeaderObject = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID] ,[ObjectID] ,[TaskDefID] ,[FieldID] ,[FieldCode] ,[FieldName] ,[FieldValue] ,[ExportDate] FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters] where [_tbEleaderExportObjectParameters].FieldCode = 'OBJ_PARAM_7774424' and [_tbEleaderExportObjectParameters].FieldName='SMS phone number' and [_tbEleaderExportObjectParameters].FieldValue = '" . $phone_number . "'"));
-            var_dump($eLeaderObject);
             if ($eLeaderObject->isNotEmpty()) {
                 $bot_status->update([
                     'path' => $this->path_append($bot_status->path, '/phone_number_received'),
@@ -145,12 +142,12 @@ class BotELeaderUpdateHandler
                 $otp_code = Random::generate(6, '0-9');
                 $otp_message = 'BGI+Code:+' . $otp_code;
                 $url = 'http://10.10.1.59:9501/api?action=sendmessage&username=' . env('OZEKING_USERNAME', 'admin') . '&password=' . env('OZEKING_PASSWORD', 'admin') . '&recipient=' . $bot_status->last_answer . '&messagetype=SMS:TEXT&messagedata=' . $otp_message;
-                var_dump($bot_status->last_answer);
 
                 $curl = curl_init();
                 curl_setopt($curl, CURLOPT_URL, $url);
                 curl_exec($curl);
 
+                Log::info($otp_message);
                 $bot->sendMessage([
                     'chat_id' => $update->message->chat->id,
                     'text' => 'ስልክዎን ስለላኩልን በጣም እናመሰግናለን።' . chr(10) .
