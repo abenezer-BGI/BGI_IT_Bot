@@ -96,8 +96,8 @@ class BotELeaderUpdateHandler
     {
         $bot->sendMessage([
             'chat_id' => $update->message->chat->id ?? $update->callback_query->message->chat->id,
-            'text' => 'ውድ የቢ.ጂ.አይ ቤተኛ ደንበኛችን እንኳን ወደ ቴሌግራም ቦታችን በሰላም መጡ።' . chr(10) .
-                'ከታች ያሉትን አገልግሎቶች ማግኘት ይችላሉ።',
+            'text' => 'ውድ የቢ.ጂ.አይ ቤተኛ ደንበኛችን እንኳን ወደስለ ቢ.ጂ.አይ ቤተኛ ቴሌግራም ቦታችን በሰላም መጡ።' . chr(10) .
+                'ቢ.ጂ.አይ ቤተኛን በተመለከተ ምን ማወቅ ይፈልጋሉ?',
             'reply_markup' => new InlineKeyboardMarkup([
                 'inline_keyboard' => [
                     [
@@ -190,3 +190,4 @@ class BotELeaderUpdateHandler
         }
     }
 }
+

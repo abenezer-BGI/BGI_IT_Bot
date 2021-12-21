@@ -7,6 +7,7 @@ namespace App\Telegram\Commands;
 use App\Models\BotStatus;
 use App\Models\BotUser;
 use App\Telegram\Handlers\BotUpdateHandler;
+use App\Telegram\Handlers\eLeader\BotELeaderCallbackHandler;
 use Illuminate\Support\Facades\Log;
 use WeStacks\TeleBot\Exception\TeleBotObjectException;
 use WeStacks\TeleBot\Handlers\CommandHandler;
@@ -87,44 +88,53 @@ class BotStartCommand extends CommandHandler
     public function welcome_message($update)
     {
         if (isset($update->callback_query)) {
-            $this->sendMessage([
-                'text' => 'ሰላም ' . $update->callback_query->from->first_name . ', ' . chr(10) . 'ምን ማድረግ ይፈልጋሉ?',
-                'chat_id' => $update->callback_query->message->chat->id,
-//                'message_id'=>$update->callback_query->message->message_id,
-                'reply_markup' => new InlineKeyboardMarkup([
-                    'inline_keyboard' => [
-                        [
-                            new InlineKeyboardButton([
-                                'text' => 'ቢ.ጂ.አይ ቤተኛ',
-                                'callback_data' => 'eLeader',
-                            ]),
-//                                new InlineKeyboardButton([
-//                                    'text' => 'Bill Report',
-//                                    'callback_data' => 'telecom_bill',
-//                                ]),
-                        ]
-                    ],
-                ]),
-            ]);
+            $message = $this->update->callback_query->message;
+            $bot_user = BotUser::query()->firstWhere('telegram_user_id', '=', $this->update->callback_query->message->chat->id);
+            $bot_status = BotStatus::query()->firstWhere('user_id', '=', $bot_user->id);
+//            $this->sendMessage([
+//                'text' => 'ሰላም ውድ ደንበኛችን' . chr(10) . 'ምን ማድረግ ይፈልጋሉ?',
+//                'chat_id' => $update->callback_query->message->chat->id,
+////                'message_id'=>$update->callback_query->message->message_id,
+//                'reply_markup' => new InlineKeyboardMarkup([
+//                    'inline_keyboard' => [
+//                        [
+//                            new InlineKeyboardButton([
+//                                'text' => 'ቢ.ጂ.አይ ቤተኛ',
+//                                'callback_data' => 'eLeader',
+//                            ]),
+////                                new InlineKeyboardButton([
+////                                    'text' => 'Bill Report',
+////                                    'callback_data' => 'telecom_bill',
+////                                ]),
+//                        ]
+//                    ],
+//                ]),
+//            ]);
+            (new BotELeaderCallbackHandler())->request_phone_number($this->bot, $bot_user, $bot_status, $message, $update);
+
         } elseif (isset($update->message)) {
-            $this->sendMessage([
-                'text' => 'ሰላም ' . $update->message->from->first_name . ', ' . chr(10) . 'ምን ማድረግ ይፈልጋሉ?',
-                'chat_id' => $update->message->chat->id,
-                'reply_markup' => new InlineKeyboardMarkup([
-                    'inline_keyboard' => [
-                        [
-                            new InlineKeyboardButton([
-                                'text' => 'ቢ.ጂ.አይ ቤተኛ',
-                                'callback_data' => 'eLeader',
-                            ]),
-//                                new InlineKeyboardButton([
-//                                    'text' => 'Bill Report',
-//                                    'callback_data' => 'telecom_bill',
-//                                ]),
-                        ]
-                    ],
-                ]),
-            ]);
+//            $this->sendMessage([
+//                'text' => 'ሰላም ' . $update->message->from->first_name . ', ' . chr(10) . 'ምን ማድረግ ይፈልጋሉ?',
+//                'chat_id' => $update->message->chat->id,
+//                'reply_markup' => new InlineKeyboardMarkup([
+//                    'inline_keyboard' => [
+//                        [
+//                            new InlineKeyboardButton([
+//                                'text' => 'ቢ.ጂ.አይ ቤተኛ',
+//                                'callback_data' => 'eLeader',
+//                            ]),
+////                                new InlineKeyboardButton([
+////                                    'text' => 'Bill Report',
+////                                    'callback_data' => 'telecom_bill',
+////                                ]),
+//                        ]
+//                    ],
+//                ]),
+//            ]);
+            $bot_user = BotUser::query()->firstWhere('telegram_user_id', '=', $this->update->message->chat->id);
+            $bot_status = BotStatus::query()->firstWhere('user_id', '=', $bot_user->id);
+
+            (new BotELeaderCallbackHandler())->request_phone_number($this->bot, $bot_user, $bot_status, $update->message, $update);
         }
     }
 

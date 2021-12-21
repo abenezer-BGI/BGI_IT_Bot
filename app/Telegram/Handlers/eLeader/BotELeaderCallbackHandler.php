@@ -45,7 +45,7 @@ class BotELeaderCallbackHandler
                 'text' => $clientInfoMessage,
             ]);
         }else{
-
+            $this->not_registered_to_bgi_betegna($update,'amharic');
         }
     }
 
@@ -67,10 +67,11 @@ class BotELeaderCallbackHandler
                 'back_path' => 'root',
             ]);
 
-            $bot->sendMessage([
+            $bot->sendPhoto([
                 'chat_id' => $message->chat->id,
-                'text' => 'ሰላም' . chr(10) .
-                    'ይህ የቢ.ጂ.አይ ኢትዮጵያ ቤተኛ ቴሌግራም ቦት ነው።' . chr(10) .
+                'photo' => 'AgACAgQAAxkBAAIGt2HBcSbngYVZXSG0jyydl6nqQYSwAALytzEbe2oJUjEOj5ziRA8_AQADAgADcwADIwQ',
+                'caption' => 'ሰላም' . chr(10) .
+                    'ይህ የቢ.ጂ.አይ ቤተኛ ቴሌግራም ቦት ነው።' . chr(10) .
                     'እባክዎን የእርሶ ቤት የተመዘገበትን ስልክ ቁጥር ይላኩልን።' . chr(10) .
                     'ስልክዎን ሲያስገቡ 09 ብሎ እንዲጀምር ያድርጉት። ለምሳሌ፡ 0900110011',
             ]);
