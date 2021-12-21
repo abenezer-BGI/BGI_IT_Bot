@@ -69,7 +69,7 @@ class BotELeaderCallbackHandler
 
             $bot->sendPhoto([
                 'chat_id' => $message->chat->id,
-                'photo' => 'AgACAgQAAxkBAAIGt2HBcSbngYVZXSG0jyydl6nqQYSwAALytzEbe2oJUjEOj5ziRA8_AQADAgADcwADIwQ',
+                'photo' => env('TELEGRAM_BGI_BETEGNA_PHOTO_FILE_ID'),
                 'caption' => 'ሰላም ውድ የቦታችን ተጠቃሚ' . chr(10) .
                     'ይህ የቢ.ጂ.አይ ቤተኛ ቴሌግራም ቦት ነው።' . chr(10) .
                     'እባክዎን የእርሶ ቤት የተመዘገበትን ስልክ ቁጥር ይላኩልን።' . chr(10) .
