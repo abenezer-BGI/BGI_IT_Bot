@@ -37,15 +37,15 @@ class BotELeaderCallbackHandler
             $clientLocation = collect(DB::connection('eLeader')->select("select ObjectID, ObjectName, City, Country from _tbEleaderExportObjects where ObjectID = '" . $object->ObjectID . "'"))->first();
             $clientInfoMessage = '✔️ Name: ' . $clientLocation->ObjectName . chr(10) . '✔️ Location: ' . $clientLocation->City . ', ' . $clientLocation->Country . chr(10);
             foreach ($clientInfo as $info) {
-                $clientInfoMessage .= '✔️ '.$info->FieldName . ': ' . $info->FieldValue . chr(10);
+                $clientInfoMessage .= '✔️ ' . $info->FieldName . ': ' . $info->FieldValue . chr(10);
             }
 
             $bot->sendMessage([
                 'chat_id' => $message->chat->id,
                 'text' => $clientInfoMessage,
             ]);
-        }else{
-            $this->not_registered_to_bgi_betegna($update,'amharic');
+        } else {
+            $this->not_registered_to_bgi_betegna($bot, $update, 'amharic');
         }
     }
 
@@ -70,7 +70,7 @@ class BotELeaderCallbackHandler
             $bot->sendPhoto([
                 'chat_id' => $message->chat->id,
                 'photo' => 'AgACAgQAAxkBAAIGt2HBcSbngYVZXSG0jyydl6nqQYSwAALytzEbe2oJUjEOj5ziRA8_AQADAgADcwADIwQ',
-                'caption' => 'ሰላም' . chr(10) .
+                'caption' => 'ሰላም ውድ የቦታችን ተጠቃሚ' . chr(10) .
                     'ይህ የቢ.ጂ.አይ ቤተኛ ቴሌግራም ቦት ነው።' . chr(10) .
                     'እባክዎን የእርሶ ቤት የተመዘገበትን ስልክ ቁጥር ይላኩልን።' . chr(10) .
                     'ስልክዎን ሲያስገቡ 09 ብሎ እንዲጀምር ያድርጉት። ለምሳሌ፡ 0900110011',
