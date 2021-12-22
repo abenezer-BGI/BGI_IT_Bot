@@ -14,6 +14,8 @@ use Nette\Utils\Random;
 use WeStacks\TeleBot\Exception\TeleBotObjectException;
 use WeStacks\TeleBot\Objects\InlineKeyboardButton;
 use WeStacks\TeleBot\Objects\Keyboard\InlineKeyboardMarkup;
+use WeStacks\TeleBot\Objects\Keyboard\ReplyKeyboardMarkup;
+use WeStacks\TeleBot\Objects\KeyboardButton;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
 
@@ -37,9 +39,9 @@ class BotELeaderUpdateHandler
                 $fidelityDataFromDB = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID] ,[ObjectID] ,[TaskDefID] ,[FieldID] ,[FieldCode] ,[FieldName] ,[FieldValue] ,[ExportDate] FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters] where ObjectID= '" . $eLeaderObjectFromDB->first()->ObjectID . "' and (FieldCode='OBJ_PARAM_EarnedPoints' or FieldCode='OBJ_PARAM_Fidelity_ID' or FieldCode='OBJ_PARAM_BGIID') and (FieldName ='Earned points' or FieldName='Fidelity ID' or FieldName='BGI ID')"));
 
                 $bot_status->update([
-                    'last_question'=> '',
-                    'last_answer'=>'',
-                    'path'=>$this->path_append($bot_status->path,'/otp_confirmation'),
+                    'last_question' => '',
+                    'last_answer' => '',
+                    'path' => $this->path_append($bot_status->path, '/otp_confirmation'),
                 ]);
 
                 ELeader::query()->updateOrCreate(
@@ -75,29 +77,31 @@ class BotELeaderUpdateHandler
             'chat_id' => $update->message->chat->id ?? $update->callback_query->message->chat->id,
             'text' => 'ውድ የቢ.ጂ.አይ ቤተኛ ደንበኛችን እንኳን ወደ ቢ.ጂ.አይ ቤተኛ ቴሌግራም ቦታችን በሰላም መጡ።' . chr(10) .
                 'ቢ.ጂ.አይ ቤተኛን በተመለከተ ምን ማወቅ ይፈልጋሉ?',
-            'reply_markup' => new InlineKeyboardMarkup([
-                'inline_keyboard' => [
+            'reply_markup' => new ReplyKeyboardMarkup([
+                'keyboard' => [
                     [
-                        new InlineKeyboardButton([
+                        new KeyboardButton([
                             'text' => '💎  እንቁ ብዛት',
-                            'callback_data' => 'eLeader.enqu_amount',
+//                            'callback_data' => 'eLeader.enqu_amount',
                         ]),
-                        new InlineKeyboardButton([
+                        new KeyboardButton([
                             'text' => 'ℹ️  የቤቴ መረጃ',
-                           'callback_data' => 'eLeader.client_info',
+//                           'callback_data' => 'eLeader.client_info',
                         ]),
                     ],
                     [
-                        new InlineKeyboardButton([
+                        new KeyboardButton([
                             'text' => 'ℹ️  የጉብኝት መረጃ',
-                            'callback_data' => 'eLeader.visit_data',
+//                            'callback_data' => 'eLeader.visit_data',
                         ]),
-                        new InlineKeyboardButton([
+                        new KeyboardButton([
                             'text' => '📞  ደንበኞች አገልግሎት',
-                            'callback_data' => 'eLeader.customer_service',
+//                            'callback_data' => 'eLeader.customer_service',
                         ]),
                     ],
                 ],
+                'resize_keyboard' => true,
+                'input_field_placeholder'=> 'ቢ.ጂ.አይ ቤተኛ',
             ]),
         ]);
     }
@@ -173,7 +177,7 @@ class BotELeaderUpdateHandler
                 ]);
             }
         } else {
-            $this->error_message($bot,$update, 'amharic');
+            $this->error_message($bot, $update, 'amharic');
         }
     }
 }

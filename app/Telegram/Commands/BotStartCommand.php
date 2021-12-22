@@ -75,7 +75,7 @@ class BotStartCommand extends CommandHandler
             $this->welcome_message($this->update);
 
         } catch (TeleBotObjectException $e) {
-            Log::info($e->getMessage());
+            Log::error('Line: '.$e->getLine().' File:'.$e->getFile().'Message: '.$e->getMessage());
         }
 
     }

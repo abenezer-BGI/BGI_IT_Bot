@@ -55,7 +55,7 @@ class BotUpdateHandler extends UpdateHandler
                         (new BotELeaderCallbackHandler())->request_phone_number($bot, $bot_user, $bot_status, $message, $update);
                         break;
                     case 'eLeader.enqu_amount':
-                        (new BotELeaderCallbackHandler())->send_enqu_amount($bot, $bot_user, $update);
+                        (new BotELeaderCallbackHandler())->send_enqu_amount($bot, $bot_user, $message);
                         break;
                     case 'eLeader.client_info':
                         (new BotELeaderCallbackHandler())->send_client_info($bot, $bot_user, $message, $update);
@@ -73,6 +73,7 @@ class BotUpdateHandler extends UpdateHandler
 
                 $this->answerCallbackQuery();
             } elseif ($this->update->type() === 'message') {
+                $message = $this->update->message;
                 $bot_user = BotUser::query()->firstWhere('telegram_user_id', '=', $this->update->message->chat->id);
                 $bot_status = BotStatus::query()->firstWhere('user_id', '=', $bot_user->id);
 
@@ -84,12 +85,28 @@ class BotUpdateHandler extends UpdateHandler
                         (new BotELeaderUpdateHandler())->phone_number_request($bot, $bot_user, $bot_status, $update);
                         break;
                     default:
-                        $this->error_message($bot, $update, 'amharic');
+                        switch ($message->text) {
+                            case '💎  እንቁ ብዛት':
+                                (new BotELeaderCallbackHandler())->send_enqu_amount($bot, $bot_user, $message);
+                                break;
+                            case 'ℹ️  የቤቴ መረጃ':
+                                (new BotELeaderCallbackHandler())->send_client_info($bot, $bot_user, $message, $update);
+                                break;
+                            case 'ℹ️  የጉብኝት መረጃ':
+                                (new BotELeaderCallbackHandler())->visit_info($bot, $bot_user, $message);
+                                break;
+                            case '📞  ደንበኞች አገልግሎት':
+                                (new BotELeaderCallbackHandler())->customer_service_contact($bot, $message);
+                                break;
+                            default:
+                                $this->error_message($bot, $update, 'amharic');
+                                break;
+                        }
                         break;
                 }
             }
         } catch (Exception $e) {
-            Log::error($e->getMessage());
+            Log::error('Line: '.$e->getLine().' File:'.$e->getFile().'Message: '.$e->getMessage());
         }
 
     }

@@ -11,6 +11,7 @@ use App\Traits\TelegramCustomTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use WeStacks\TeleBot\Exception\TeleBotObjectException;
 use WeStacks\TeleBot\Objects\Message;
 use WeStacks\TeleBot\Objects\Update;
@@ -127,9 +128,9 @@ class BotELeaderCallbackHandler
     /**
      * @param TeleBot $bot
      * @param Builder|Model $bot_user
-     * @param Update $update
+     * @param Message $message
      */
-    public function send_enqu_amount(TeleBot $bot, $bot_user, Update $update)
+    public function send_enqu_amount(TeleBot $bot, $bot_user, Message $message)
     {
         $eLeaderUserData = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID] ,[ObjectID] ,[TaskDefID] ,[FieldID] ,[FieldCode] ,[FieldName] ,[FieldValue] ,[ExportDate] FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters] where [_tbEleaderExportObjectParameters].FieldCode = 'OBJ_PARAM_7774424' and [_tbEleaderExportObjectParameters].FieldName='SMS phone number' and [_tbEleaderExportObjectParameters].FieldValue = '" . $bot_user->service_number . "'"));
         $enquMessage = '';
@@ -144,9 +145,9 @@ class BotELeaderCallbackHandler
         } else {
             $enquMessage .= 'ውድ ደንበኛችን የቢ.ጂ.አይ ቤተኛ አገልግሎት ተጠቃሚዎች ዝርዝር ውስጥ አላገኘንዎትም።';
         }
-
+;
         $bot->sendMessage([
-            'chat_id' => $update->callback_query->message->chat->id,
+            'chat_id' => $message->chat->id,
             'text' => $enquMessage,
         ]);
     }
