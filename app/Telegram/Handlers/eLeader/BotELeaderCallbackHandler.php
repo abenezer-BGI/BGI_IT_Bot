@@ -22,18 +22,15 @@ class BotELeaderCallbackHandler
 
     /**
      * @param TeleBot $bot
-     * @param Builder|Model $bot_user
      * @param Message $message
-     * @param Update $update
-     * @throws TeleBotObjectException
      */
-    public function customer_service_contact(TeleBot $bot, BotUser $bot_user, Message $message, Update $update)
+    public function customer_service_contact(TeleBot $bot, Message $message)
     {
         $customerServiceContactMessage = 'ውድ ደንበኛችን የቢ.ጂ.አይ ኢትዮጵያ ደንበኛ አገልግሎትን ለማግኘት የሚከተሉትን ስልክ ቁጥሮች መጠቀም ይችላሉ።'.chr(10).chr(10).
-            '📞 *+251948058656*'.chr(10).
-            '📞 *+251948058657*'.chr(10).
-            '📞 *+251115181515*'.chr(10).
-            '📞 *+251115181474*';
+            '📞 +251948058656'.chr(10).
+            '📞 +251948058657'.chr(10).
+            '📞 +251115181515'.chr(10).
+            '📞 +251115181474';
 
         $bot->sendMessage([
             'chat_id'=>$message->chat->id,
