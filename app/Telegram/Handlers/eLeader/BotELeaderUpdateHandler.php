@@ -34,20 +34,7 @@ class BotELeaderUpdateHandler
         $eLeaderObjectFromDB = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID] ,[ObjectID] ,[TaskDefID] ,[FieldID] ,[FieldCode] ,[FieldName] ,[FieldValue] ,[ExportDate] FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters] where [_tbEleaderExportObjectParameters].FieldCode = 'OBJ_PARAM_7774424' and [_tbEleaderExportObjectParameters].FieldName='SMS phone number' and [_tbEleaderExportObjectParameters].FieldValue = '" . $bot_user->service_number . "'"));
         if ($update->message->text === $bot_status->last_answer) {
             if ($eLeaderObjectFromDB->isNotEmpty()) {
-                $fidelityDataFromDB = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID]
-                                        ,[ObjectID]
-                                        ,[TaskDefID]
-                                        ,[FieldID]
-                                        ,[FieldCode]
-                                        ,[FieldName]
-                                        ,[FieldValue]
-                                        ,[ExportDate]
-                                        FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters]
-                                        where ObjectID= '" . $eLeaderObjectFromDB->first()->ObjectID . "'
-                                        and (FieldCode='OBJ_PARAM_EarnedPoints' or FieldCode='OBJ_PARAM_Fidelity_ID' or FieldCode='OBJ_PARAM_BGIID')
-                                        and (FieldName ='Earned points' or FieldName='Fidelity ID' or FieldName='BGI ID')"));
-
-                Log::info($fidelityDataFromDB->toJson());
+                $fidelityDataFromDB = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID] ,[ObjectID] ,[TaskDefID] ,[FieldID] ,[FieldCode] ,[FieldName] ,[FieldValue] ,[ExportDate] FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters] where ObjectID= '" . $eLeaderObjectFromDB->first()->ObjectID . "' and (FieldCode='OBJ_PARAM_EarnedPoints' or FieldCode='OBJ_PARAM_Fidelity_ID' or FieldCode='OBJ_PARAM_BGIID') and (FieldName ='Earned points' or FieldName='Fidelity ID' or FieldName='BGI ID')"));
 
                 $bot_status->update([
                     'last_question'=> '',
@@ -71,16 +58,6 @@ class BotELeaderUpdateHandler
             $bot->sendMessage([
                 'chat_id' => $update->message->chat->id,
                 'text' => 'ያስገቡት ቁጥር እና እኛ የላክነው ቁጥር አይመሳሰሉም። እባክዎን ትክክለኛውን ቁጥር ያስገቡ።',
-                'reply_markup' => new InlineKeyboardMarkup([
-                    'inline_keyboard' => [
-                        [
-                            new InlineKeyboardButton([
-                                'text' => '<< ተመለስ',
-                                'callback_data' => $bot_status->back_path,
-                            ]),
-                        ],
-                    ],
-                ]),
             ]);
         }
     }
@@ -102,18 +79,22 @@ class BotELeaderUpdateHandler
                 'inline_keyboard' => [
                     [
                         new InlineKeyboardButton([
-                            'text' => 'እንቁ ብዛት 💎',
+                            'text' => '💎  እንቁ ብዛት',
                             'callback_data' => 'eLeader.enqu_amount',
                         ]),
                         new InlineKeyboardButton([
-                            'text' => 'የቤቴ መረጃ ℹ️',
+                            'text' => 'ℹ️  የቤቴ መረጃ',
                            'callback_data' => 'eLeader.client_info',
                         ]),
                     ],
                     [
                         new InlineKeyboardButton([
-                            'text' => 'የጉብኝት መረጃ ℹ️',
+                            'text' => 'ℹ️  የጉብኝት መረጃ',
                             'callback_data' => 'eLeader.visit_data',
+                        ]),
+                        new InlineKeyboardButton([
+                            'text' => '📞  ደንበኞች አገልግሎት',
+                            'callback_data' => 'eLeader.customer_service',
                         ]),
                     ],
                 ],

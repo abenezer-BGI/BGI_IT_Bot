@@ -27,7 +27,27 @@ class BotELeaderCallbackHandler
      * @param Update $update
      * @throws TeleBotObjectException
      */
-    public function visit_info(TeleBot $bot, BotUser $bot_user, Message $message, Update $update)
+    public function customer_service_contact(TeleBot $bot, BotUser $bot_user, Message $message, Update $update)
+    {
+        $customerServiceContactMessage = 'ውድ ደንበኛችን የቢ.ጂ.አይ ኢትዮጵያ ደንበኛ አገልግሎትን ለማግኘት የሚከተሉትን ስልክ ቁጥሮች መጠቀም ይችላሉ።'.chr(10).chr(10).
+            '📞 *+251948058656*'.chr(10).
+            '📞 *+251948058657*'.chr(10).
+            '📞 *+251115181515*'.chr(10).
+            '📞 *+251115181474*';
+
+        $bot->sendMessage([
+            'chat_id'=>$message->chat->id,
+            'text'=>$customerServiceContactMessage,
+            'parse_mode'=>'markdown',
+        ]);
+    }
+
+    /**
+     * @param TeleBot $bot
+     * @param Builder|Model $bot_user
+     * @param Message $message
+     */
+    public function visit_info(TeleBot $bot, BotUser $bot_user, Message $message)
     {
         $eLeaderUserData = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID] ,[ObjectID] ,[TaskDefID] ,[FieldID] ,[FieldCode] ,[FieldName] ,[FieldValue] ,[ExportDate] FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters] where [_tbEleaderExportObjectParameters].FieldCode = 'OBJ_PARAM_7774424' and [_tbEleaderExportObjectParameters].FieldName='SMS phone number' and [_tbEleaderExportObjectParameters].FieldValue = '" . $bot_user->service_number . "'"));
         $visitData = collect(DB::connection('eLeader')->select("select _tbEleaderExportActivitiesProductTasks.ActivityID, _tbEleaderExportActivitiesProductTaskDetails.ProductID, FORMAT(_tbEleaderExportActivitiesProductTasks.StopActivity,'MMMM dd, yyyy') as visit_date, _tbEleaderExportProducts.ProductName as product_name, _tbEleaderExportActivitiesProductTaskDetails.FieldName as measure, _tbEleaderExportActivitiesProductTaskDetails.FieldValue as quantity from _tbEleaderExportActivitiesProductTasks left join _tbEleaderExportActivitiesProductTaskDetails on _tbEleaderExportActivitiesProductTaskDetails.ActivityID = _tbEleaderExportActivitiesProductTasks.ActivityID left join _tbEleaderExportProducts on _tbEleaderExportProducts.ProductID = _tbEleaderExportActivitiesProductTaskDetails.ProductID where _tbEleaderExportActivitiesProductTasks.ObjectID = '02121000000000001403673' and _tbEleaderExportActivitiesProductTaskDetails.FieldName = 'Quantity pcs' and _tbEleaderExportActivitiesProductTaskDetails.TaskStatus = 'executed' order by visit_date desc"));
@@ -54,7 +74,6 @@ class BotELeaderCallbackHandler
      * @param Builder|Model $bot_user
      * @param Message $message
      * @param Update $update
-     * @throws TeleBotObjectException
      */
     public function send_client_info(TeleBot $bot, BotUser $bot_user, Message $message, Update $update)
     {
