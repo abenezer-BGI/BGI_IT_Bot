@@ -32,8 +32,8 @@ return [
     |             ]
     */
     'bots'                         => [
-        'bgi_it_bot' => [
-            'username'            => 'TelegramBot',
+        'bgi_betegna_bot' => [
+            'username'            => 'bgi_betegna_bot',
             'token'               => env('TELEGRAM_BOT_TOKEN', '2058241532:AAHLWox9wF1m_q3Ca450onpB3LMpPYbigfo'),
             'certificate_path'    => env('TELEGRAM_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
             'webhook_url'         => env('TELEGRAM_WEBHOOK_URL', 'YOUR-BOT-WEBHOOK-URL'),
@@ -60,7 +60,7 @@ return [
     | your default bot for regular use.
     |
     */
-    'default'                      => 'bgi_it_bot',
+    'default'                      => 'bgi_betegna_bot',
 
     /*
     |--------------------------------------------------------------------------

@@ -19,7 +19,7 @@ return [
     |
     */
 
-    'default' => 'bgi_it_bot',
+    'default' => 'bgi_betegna_bot',
 
     /*-------------------------------------------------------------------------
     | Your Telegram Bots
@@ -32,7 +32,7 @@ return [
     */
 
     'bots' => [
-        'bgi_it_bot' => [
+        'bgi_betegna_bot' => [
             'token' => env('TELEGRAM_BOT_TOKEN'),
             'name' => env('TELEGRAM_BOT_NAME', null),
             'api_url' => 'https://api.telegram.org',
@@ -40,17 +40,18 @@ return [
             'async' => true,
 
             'webhook' => [
-                // 'url'               => env('TELEGRAM_BOT_WEBHOOK_URL', env('APP_URL').'/telebot/webhook/bot/'.env('TELEGRAM_BOT_TOKEN')),,
-                // 'certificate'       => env('TELEGRAM_BOT_CERT_PATH', storage_path('app/ssl/public.pem')),
-                // 'ip_address'        => '8.8.8.8',
-                // 'max_connections'   => 40,
-                // 'allowed_updates'   => ["message", "edited_channel_post", "callback_query"]
+//                 'url'               => env('TELEGRAM_WEBHOOK_URL', env('APP_URL').'/telebot/webhook/bot/'.env('TELEGRAM_BOT_TOKEN')),,
+                 'url'               => env('TELEGRAM_WEBHOOK_URL'),
+                 'certificate'       => env('TELEGRAM_BOT_CERT_PATH', storage_path('app/ssl/public.pem')),
+                 'max_connections'   => 100,
+                 'ip_address'        => '8.8.8.8',
+                 'allowed_updates'   => ["message", "edited_channel_post", "callback_query"]
             ],
 
             'poll' => [
-                // 'limit'             => 100,
-                // 'timeout'           => 0,
-                // 'allowed_updates'   => ["message", "edited_channel_post", "callback_query"]
+                 'limit'             => 100,
+                 'timeout'           => 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+                 'allowed_updates'   => ["message", "edited_channel_post", "callback_query"]
             ],
 
             'handlers' => [

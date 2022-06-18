@@ -77,7 +77,6 @@ class BotDeviceInventoryUpdateHandler extends UpdateHandler
                 $text .= $device->device_type . ' [' . $device->serial_number . '] ' . $device->model . chr(10);
             }
 
-            Log::debug($text);
             $this->sendMessage([
                 'chat_id' => $callback->message->chat->id,
                 'text' => $text,
@@ -116,7 +115,7 @@ class BotDeviceInventoryUpdateHandler extends UpdateHandler
             foreach ($computer_data as $computer) {
                 $text .= $computer->site->display_name . ' [' . $computer->device_type . '] = ' . $computer->count . chr(10);
             }
-            Log::debug($text);
+
             $this->sendMessage([
                 'chat_id' => $callback->message->chat->id,
                 'text' => $text,
@@ -129,7 +128,7 @@ class BotDeviceInventoryUpdateHandler extends UpdateHandler
             foreach ($monitor_data as $monitor) {
                 $text .= $monitor->site->display_name . ' [' . $monitor->device_type . '] = ' . $monitor->count . chr(10);
             }
-            Log::debug($text);
+
             $this->sendMessage([
                 'chat_id' => $callback->message->chat->id,
                 'text' => $text,
@@ -142,7 +141,7 @@ class BotDeviceInventoryUpdateHandler extends UpdateHandler
             foreach ($printer_data as $printer) {
                 $text .= $printer->site->display_name . ' [' . $printer->device_type . '] = ' . $printer->count . chr(10);
             }
-            Log::debug($text);
+
             $this->sendMessage([
                 'chat_id' => $callback->message->chat->id,
                 'text' => $text,
