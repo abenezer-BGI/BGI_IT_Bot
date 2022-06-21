@@ -47,8 +47,36 @@ class BotELeaderCallbackHandler
      */
     public function visit_info(TeleBot $bot, BotUser $bot_user, Message $message)
     {
-        $eLeaderUserData = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID] ,[ObjectID] ,[TaskDefID] ,[FieldID] ,[FieldCode] ,[FieldName] ,[FieldValue] ,[ExportDate] FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters] where [_tbEleaderExportObjectParameters].FieldCode = 'OBJ_PARAM_7774424' and [_tbEleaderExportObjectParameters].FieldName='SMS phone number' and [_tbEleaderExportObjectParameters].FieldValue = '" . $bot_user->service_number . "'"));
-        $visitData = collect(DB::connection('eLeader')->select("select _tbEleaderExportActivitiesProductTasks.ActivityID, _tbEleaderExportActivitiesProductTaskDetails.ProductID, FORMAT(_tbEleaderExportActivitiesProductTasks.StopActivity,'MMMM dd, yyyy') as visit_date, _tbEleaderExportProducts.ProductName as product_name, _tbEleaderExportActivitiesProductTaskDetails.FieldName as measure, _tbEleaderExportActivitiesProductTaskDetails.FieldValue as quantity from _tbEleaderExportActivitiesProductTasks left join _tbEleaderExportActivitiesProductTaskDetails on _tbEleaderExportActivitiesProductTaskDetails.ActivityID = _tbEleaderExportActivitiesProductTasks.ActivityID left join _tbEleaderExportProducts on _tbEleaderExportProducts.ProductID = _tbEleaderExportActivitiesProductTaskDetails.ProductID where _tbEleaderExportActivitiesProductTasks.ObjectID = '02121000000000001403673' and _tbEleaderExportActivitiesProductTaskDetails.FieldName = 'Quantity pcs' and _tbEleaderExportActivitiesProductTaskDetails.TaskStatus = 'executed' order by visit_date desc"));
+        $eLeaderUserData = collect(DB::connection('eLeader')->select("SELECT TOP (1000) [ID],
+                                                          [ObjectID],
+                                                          [TaskDefID],
+                                                          [FieldID],
+                                                          [FieldCode],
+                                                          [FieldName],
+                                                          [FieldValue],
+                                                          [ExportDate]
+                                        FROM [ELeader_DB].[dbo].[_tbEleaderExportObjectParameters]
+                                        where [_tbEleaderExportObjectParameters].FieldCode = 'OBJ_PARAM_7774424'
+                                        and [_tbEleaderExportObjectParameters].FieldName = 'SMS phone number'
+                                        and [_tbEleaderExportObjectParameters].FieldValue = '" . $bot_user->service_number . "'"));
+        Log::debug($eLeaderUserData->pluck("ObjectID")->first());
+        $visitData = collect(DB::connection('eLeader')
+            ->select("select _tbEleaderExportActivitiesProductTasks.ActivityID,
+                                   _tbEleaderExportActivitiesProductTaskDetails.ProductID,
+                                   FORMAT(_tbEleaderExportActivitiesProductTasks.StopActivity, 'yyyy-MM-dd') as visit_date,
+                                   _tbEleaderExportProducts.ProductName                                         as product_name,
+                                   _tbEleaderExportActivitiesProductTaskDetails.FieldName                       as measure,
+                                   _tbEleaderExportActivitiesProductTaskDetails.FieldValue                      as quantity
+                            from _tbEleaderExportActivitiesProductTasks
+                                     left join _tbEleaderExportActivitiesProductTaskDetails
+                                               on _tbEleaderExportActivitiesProductTaskDetails.ActivityID =
+                                                  _tbEleaderExportActivitiesProductTasks.ActivityID
+                                     left join _tbEleaderExportProducts
+                                               on _tbEleaderExportProducts.ProductID = _tbEleaderExportActivitiesProductTaskDetails.ProductID
+                            where _tbEleaderExportActivitiesProductTasks.ObjectID = '".$eLeaderUserData->pluck("ObjectID")->first()."'
+                              and _tbEleaderExportActivitiesProductTaskDetails.FieldName = 'Quantity pcs'
+                              and _tbEleaderExportActivitiesProductTaskDetails.TaskStatus = 'executed'
+                            order by visit_date desc;"));
         $visitDates = $visitData->pluck('visit_date')->unique();
         $visitMessage = '';
         foreach ($visitDates->take(3) as $visitDate) {
