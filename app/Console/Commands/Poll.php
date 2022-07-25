@@ -44,7 +44,6 @@ class Poll extends Command
         while (true){
             try {
                 TeleBot::getUpdates()->then(function ($response) {
-                    Log::info($response);
                     $this->info('Promise Fulfilled ');
                 }, function () {
                     $this->error('Promise Rejected ');

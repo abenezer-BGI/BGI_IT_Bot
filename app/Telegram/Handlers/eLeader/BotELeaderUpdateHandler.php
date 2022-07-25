@@ -85,20 +85,26 @@ class BotELeaderUpdateHandler
 //                            'callback_data' => 'eLeader.enqu_amount',
                         ]),
                         new KeyboardButton([
-                            'text' => 'ℹ️  የቤቴ መረጃ',
-//                           'callback_data' => 'eLeader.client_info',
+                            'text' => '🎁 እንቁ እቃዎች',
+//                           'callback_data' => 'eLeader.send_enqu_items',
                         ]),
                     ],
                     [
                         new KeyboardButton([
+                            'text' => 'ℹ️  የቤቴ መረጃ',
+//                           'callback_data' => 'eLeader.client_info',
+                        ]),
+                        new KeyboardButton([
                             'text' => 'ℹ️  የጉብኝት መረጃ',
 //                            'callback_data' => 'eLeader.visit_data',
                         ]),
+                    ],
+                    [
                         new KeyboardButton([
                             'text' => '📞  ደንበኞች አገልግሎት',
 //                            'callback_data' => 'eLeader.customer_service',
                         ]),
-                    ],
+                    ]
                 ],
                 'resize_keyboard' => true,
                 'input_field_placeholder'=> 'ቢ.ጂ.አይ ቤተኛ',

@@ -57,6 +57,9 @@ class BotUpdateHandler extends UpdateHandler
                     case 'eLeader.enqu_amount':
                         (new BotELeaderCallbackHandler())->send_enqu_amount($bot, $bot_user, $message);
                         break;
+                    case 'eLeader.send_enqu_items':
+                        (new BotELeaderCallbackHandler())->send_enqu_items($bot, $message);
+                        break;
                     case 'eLeader.client_info':
                         (new BotELeaderCallbackHandler())->send_client_info($bot, $bot_user, $message, $update);
                         break;
@@ -89,6 +92,9 @@ class BotUpdateHandler extends UpdateHandler
                             case '💎  እንቁ ብዛት':
                                 (new BotELeaderCallbackHandler())->send_enqu_amount($bot, $bot_user, $message);
                                 break;
+                            case '🎁 እንቁ እቃዎች':
+                                (new BotELeaderCallbackHandler())->send_enqu_items($bot, $message);
+                                break;
                             case 'ℹ️  የቤቴ መረጃ':
                                 (new BotELeaderCallbackHandler())->send_client_info($bot, $bot_user, $message, $update);
                                 break;
@@ -106,7 +112,7 @@ class BotUpdateHandler extends UpdateHandler
                 }
             }
         } catch (Exception $e) {
-            Log::error('Line: '.$e->getLine().' File:'.$e->getFile().'Message: '.$e->getMessage());
+            Log::error('Line: ' . $e->getLine() . ' File:' . $e->getFile() . 'Message: ' . $e->getMessage());
         }
 
     }

@@ -59,11 +59,12 @@ class BotELeaderCallbackHandler
                                         where [_tbEleaderExportObjectParameters].FieldCode = 'OBJ_PARAM_7774424'
                                         and [_tbEleaderExportObjectParameters].FieldName = 'SMS phone number'
                                         and [_tbEleaderExportObjectParameters].FieldValue = '" . $bot_user->service_number . "'"));
-        Log::debug($eLeaderUserData->pluck("ObjectID")->first());
+
         $visitData = collect(DB::connection('eLeader')
             ->select("select _tbEleaderExportActivitiesProductTasks.ActivityID,
                                    _tbEleaderExportActivitiesProductTaskDetails.ProductID,
-                                   FORMAT(_tbEleaderExportActivitiesProductTasks.StopActivity, 'yyyy-MM-dd') as visit_date,
+                                   FORMAT(_tbEleaderExportActivitiesProductTasks.StopActivity, 'yyyy-MM-dd') as visit_date_sort,
+                                    FORMAT(_tbEleaderExportActivitiesProductTasks.StopActivity, 'MMMM dd, yyyy') as visit_date,
                                    _tbEleaderExportProducts.ProductName                                         as product_name,
                                    _tbEleaderExportActivitiesProductTaskDetails.FieldName                       as measure,
                                    _tbEleaderExportActivitiesProductTaskDetails.FieldValue                      as quantity
@@ -76,7 +77,7 @@ class BotELeaderCallbackHandler
                             where _tbEleaderExportActivitiesProductTasks.ObjectID = '".$eLeaderUserData->pluck("ObjectID")->first()."'
                               and _tbEleaderExportActivitiesProductTaskDetails.FieldName = 'Quantity pcs'
                               and _tbEleaderExportActivitiesProductTaskDetails.TaskStatus = 'executed'
-                            order by visit_date desc;"));
+                            order by visit_date_sort desc;"));
         $visitDates = $visitData->pluck('visit_date')->unique();
         $visitMessage = '';
         foreach ($visitDates->take(3) as $visitDate) {
@@ -177,6 +178,18 @@ class BotELeaderCallbackHandler
         $bot->sendMessage([
             'chat_id' => $message->chat->id,
             'text' => $enquMessage,
+        ]);
+    }
+
+    /**
+     * @param TeleBot $bot
+     * @param Message $message
+     */
+    public function send_enqu_items(TeleBot $bot, Message $message)
+    {
+        $bot->sendPhoto([
+            "chat_id" => $message->chat->id,
+            "photo" => "AgACAgQAAxkBAAIG42LedwNyFcggSY3jlCe5fSR8D662AAIiuTEb6xr4UkOyETEck22vAQADAgADcwADKQQ"
         ]);
     }
 
